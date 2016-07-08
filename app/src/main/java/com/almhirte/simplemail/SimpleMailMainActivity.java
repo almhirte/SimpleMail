@@ -57,68 +57,69 @@ public class SimpleMailMainActivity extends AppCompatActivity
 
     private void initGui()
     {
-        accountList = getMailAccounts();
+        accountList = loadMailAccounts();
 
         ListAdapter adapter = new ArrayAdapter<MailAccount>(getApplicationContext(), R.layout.activity_simple_mail_main, android.R.id.text1, accountList);
         final ListView lv = (ListView) findViewById(R.id.email_list);
         lv.setAdapter(adapter);
     }
 
-    private void addRow(MailAccount acc)
+    private ArrayList<MailAccount> loadMailAccounts()
     {
-        acc.getAccountName();
-    }
-
-    private ArrayList<MailAccount> getMailAccounts()
-    {
-        MailAdapter mailAdapter = new MailAdapter();
-        mailAdapter.execute();
+        /**
+         * TODO: remove in final version when Security is available
+         */
         if (accountList == null)
         {
             //rather return an empty List, than returning null
             accountList = new ArrayList<MailAccount>();
         }
+
+        MailAccount account = null;
+
+        try
+        {
+            String FILENAME = "accounts.txt";
+            InputStream in = SimpleMailMainActivity.this.getAssets().open(FILENAME);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String userName = reader.readLine();
+            String password = reader.readLine();
+            in.close();
+
+            account = new MailAccount(userName);
+            account.setUserName(userName);
+            account.setPassword(password);
+            account.setServerIncoming("imap.mail.yahoo.com");
+            accountList.add(account);
+        }
+        catch (java.io.IOException e)
+        {
+            e.printStackTrace();
+            Log.i(SIMPLE_MAIL,e.getMessage());
+        }
+
+        MailAdapter mailAdapter = new MailAdapter();
+        mailAdapter.execute(account);
+
         return accountList;
     }
 
-    private class MailAdapter extends AsyncTask<Void, Long, Integer> // params, progress units, result unit
+    private class MailAdapter extends AsyncTask<MailAccount, Long, Integer> // params, progress units, result unit
     {
-        private int connectToMailbox()
+        private int connectToMailbox(MailAccount account)
         {
             int numMails = 0;
 
-            /**
-             * TODO: remove in final version when Security is available
-             */
-            String accountName = "";
-            String password = "";
-
-            try
-            {
-                String FILENAME = "accounts.txt";
-                InputStream in = SimpleMailMainActivity.this.getAssets().open(FILENAME);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                accountName = reader.readLine();
-                password = reader.readLine();
-                in.close();
-            }
-            catch (java.io.IOException e)
-            {
-                e.printStackTrace();
-                Log.i(SIMPLE_MAIL,e.getMessage());
-            }
-
-
             Properties props = new Properties();
             props.setProperty("mail.store.protocol", "imaps");
-            props.setProperty("mail.imap.host", "imap.mail.yahoo.com");
-
-            props.setProperty("mail.password", password);
+            props.setProperty("mail.imap.host", account.getServerIncoming());
+            props.setProperty("mail.imap.user", account.getUserName());
+            props.setProperty("mail.password", account.getPassword());
             try
             {
                 Session session = Session.getInstance(props, null);
                 Store store = session.getStore();
-                store.connect("imap.mail.yahoo.com", accountName, password);//TODO: ConnectionListener should be used to verify successful connect
+                store.connect(props.getProperty("mail.imap.host"), props.getProperty("mail.imap.user"), props.getProperty("mail.password"));//TODO: ConnectionListener should be used to verify successful connect
                 if(store.isConnected())
                 {
                     Folder inbox = store.getFolder("INBOX");
@@ -154,9 +155,9 @@ public class SimpleMailMainActivity extends AppCompatActivity
         }
 
         @Override
-        protected Integer doInBackground(Void... params)
+        protected Integer doInBackground(MailAccount... params)
         {
-            int numMails = connectToMailbox();
+            int numMails = connectToMailbox(params[0]);
             return numMails;
         }
 
@@ -168,8 +169,6 @@ public class SimpleMailMainActivity extends AppCompatActivity
         protected void onPostExecute(Integer result)
         {
             //update GUI
-            SimpleMailMainActivity.this.accountList.add(new MailAccount("rudi.m3nt@yahoo.com : " + result));
-
             runOnUiThread(
                     new Runnable()
                     {
