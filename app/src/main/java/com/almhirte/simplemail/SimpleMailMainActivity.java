@@ -118,11 +118,19 @@ public class SimpleMailMainActivity extends AppCompatActivity
             {
                 Session session = Session.getInstance(props, null);
                 Store store = session.getStore();
-                store.connect("imap.mail.yahoo.com", accountName, password);
-                Folder inbox = store.getFolder("INBOX");
-                inbox.open(Folder.READ_ONLY);
-
-                numMails = inbox.getMessageCount();
+                store.connect("imap.mail.yahoo.com", accountName, password);//TODO: ConnectionListener should be used to verify successful connect
+                if(store.isConnected())
+                {
+                    Folder inbox = store.getFolder("INBOX");
+                    if(inbox != null)
+                    {
+                        inbox.open(Folder.READ_ONLY);
+                        if(inbox.isOpen())
+                        {
+                            numMails = inbox.getMessageCount();
+                        }
+                    }
+                }
 
             /*
             Message msg = inbox.getMessage(inbox.getMessageCount());
