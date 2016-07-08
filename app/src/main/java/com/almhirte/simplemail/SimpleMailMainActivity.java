@@ -75,8 +75,6 @@ public class SimpleMailMainActivity extends AppCompatActivity
             accountList = new ArrayList<MailAccount>();
         }
 
-        MailAccount account = null;
-
         try
         {
             String FILENAME = "accounts.txt";
@@ -85,22 +83,21 @@ public class SimpleMailMainActivity extends AppCompatActivity
             String userName = reader.readLine();
             String password = reader.readLine();
             in.close();
-
+            MailAccount account = null;
             account = new MailAccount(userName);
             account.setUserName(userName);
             account.setPassword(password);
             account.setServerIncoming("imap.mail.yahoo.com");
             accountList.add(account);
+
+            MailAdapter mailAdapter = new MailAdapter();
+            mailAdapter.execute(account);
         }
         catch (java.io.IOException e)
         {
             e.printStackTrace();
             Log.i(SIMPLE_MAIL,e.getMessage());
         }
-
-        MailAdapter mailAdapter = new MailAdapter();
-        mailAdapter.execute(account);
-
         return accountList;
     }
 
