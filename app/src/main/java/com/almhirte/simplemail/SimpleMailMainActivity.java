@@ -4,9 +4,12 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -19,7 +22,7 @@ import javax.mail.Folder;
 import javax.mail.Session;
 import javax.mail.Store;
 
-public class SimpleMailMainActivity extends AppCompatActivity
+public class SimpleMailMainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
 {
 
     private static final String SIMPLE_MAIL = "SimpleMail";
@@ -62,6 +65,7 @@ public class SimpleMailMainActivity extends AppCompatActivity
         ListAdapter adapter = new ArrayAdapter<MailAccount>(getApplicationContext(), R.layout.activity_simple_mail_main, android.R.id.text1, accountList);
         final ListView lv = (ListView) findViewById(R.id.email_list);
         lv.setAdapter(adapter);
+        lv.setOnItemClickListener(this);
     }
 
     private ArrayList<MailAccount> loadMailAccounts()
@@ -100,6 +104,12 @@ public class SimpleMailMainActivity extends AppCompatActivity
             Log.i(SIMPLE_MAIL,e.getMessage());
         }
         return accountList;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        Toast.makeText(getApplicationContext(),"Klickiklacki in Liste", Toast.LENGTH_LONG).show();
     }
 
     private class MailAdapter extends AsyncTask<MailAccount, Long, Integer> // params, progress units, result unit
