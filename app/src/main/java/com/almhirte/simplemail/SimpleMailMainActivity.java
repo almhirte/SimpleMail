@@ -82,12 +82,13 @@ public class SimpleMailMainActivity extends AppCompatActivity
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String userName = reader.readLine();
             String password = reader.readLine();
+            String serverIncoming = reader.readLine();
             in.close();
             MailAccount account = null;
             account = new MailAccount(userName);
             account.setUserName(userName);
             account.setPassword(password);
-            account.setServerIncoming("imap.mail.yahoo.com");
+            account.setServerIncoming(serverIncoming);
             accountList.add(account);
 
             MailAdapter mailAdapter = new MailAdapter();
