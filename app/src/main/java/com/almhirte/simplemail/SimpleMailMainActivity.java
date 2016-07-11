@@ -149,6 +149,9 @@ public class SimpleMailMainActivity extends AppCompatActivity
                 ex.printStackTrace();
                 return 0;
             }
+
+            account.setNumberOfMails(numMails);
+
             return numMails;
         }
 

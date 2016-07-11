@@ -10,6 +10,7 @@ public class MailAccount
     private String password = "";
     private String serverIncoming = "";
     private String serverOutgoing = "";
+    private int numberOfMails = 0;
 
     public MailAccount(String accountName)
     {
@@ -29,7 +30,10 @@ public class MailAccount
     @Override
     public String toString()
     {
-        return this.getAccountName();
+        String displayString = "";
+
+        displayString = this.getAccountName() + ": " + this.getNumberOfMails();
+        return displayString;
     }
 
     public String getUserName()
@@ -70,5 +74,15 @@ public class MailAccount
     public void setServerOutgoing(String serverOutgoing)
     {
         this.serverOutgoing = serverOutgoing;
+    }
+
+    public int getNumberOfMails()
+    {
+        return numberOfMails;
+    }
+
+    public void setNumberOfMails(int numberOfMails)
+    {
+        this.numberOfMails = numberOfMails;
     }
 }
