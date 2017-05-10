@@ -132,14 +132,15 @@ public class SimpleMailMainActivity extends AppCompatActivity implements Adapter
             int numMails = 0;
 
             Properties props = new Properties();
-            props.setProperty("mail.store.protocol", "imaps");
+            props.setProperty("mail.imap.ssl.enable", "true");
+            //props.setProperty("mail.store.protocol", "imaps");
             props.setProperty("mail.imap.host", account.getServerIncoming());
             props.setProperty("mail.imap.user", account.getUserName());
             props.setProperty("mail.password", account.getPassword());
             try
             {
-                Session session = Session.getInstance(props, null);
-                Store store = session.getStore();
+                Session session = Session.getInstance(props);
+                Store store = session.getStore("imap");
                 store.connect(props.getProperty("mail.imap.host"), props.getProperty("mail.imap.user"), props.getProperty("mail.password"));//TODO: ConnectionListener should be used to verify successful connect
                 if(store.isConnected())
                 {
