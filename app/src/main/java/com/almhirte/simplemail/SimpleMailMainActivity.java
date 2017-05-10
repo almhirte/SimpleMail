@@ -1,6 +1,7 @@
 package com.almhirte.simplemail;
 
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -116,6 +118,17 @@ public class SimpleMailMainActivity extends AppCompatActivity implements Adapter
     {
         private int connectToMailbox(MailAccount account)
         {
+            /*
+            //test
+            String SD_CARD_PATH = Environment.getExternalStorageDirectory().toString();
+            File f = new File(SD_CARD_PATH + "/" + "test.txt");
+            boolean existing = f.exists();
+
+            if(existing)
+            {
+                int a = 0;
+            }
+            */
             int numMails = 0;
 
             Properties props = new Properties();
@@ -154,6 +167,7 @@ public class SimpleMailMainActivity extends AppCompatActivity implements Adapter
             System.out.println("SUBJECT:" + msg.getSubject());
             System.out.println("CONTENT:" + bp.getContent());
             */
+
             } catch (Exception ex)
             {
                 ex.printStackTrace();

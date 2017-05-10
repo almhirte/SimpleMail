@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SimpleMail</string>
+    <string name="title_activity_read_mail">ReadMailActivity</string>
 </resources>
